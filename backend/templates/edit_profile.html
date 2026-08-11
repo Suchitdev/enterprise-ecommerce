@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card">
+
+        <div class="card-header bg-primary text-white">
+            <h4>Edit Profile</h4>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label>Username</label>
+                <input class="form-control mb-3" name="username" value="{{ request.user.username }}">
+
+                <label>First Name</label>
+                <input class="form-control mb-3" name="first_name" value="{{ request.user.first_name }}">
+
+                <label>Last Name</label>
+                <input class="form-control mb-3" name="last_name" value="{{ request.user.last_name }}">
+
+                <label>Email</label>
+                <input class="form-control mb-3" name="email" value="{{ request.user.email }}">
+
+                <label>Phone Number</label>
+
+                <input type="text" class="form-control mb-3" name="phone_number"
+                    value="{{ request.user.phone_number }}">
+
+                <button class="btn btn-success">
+                    Save Changes
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

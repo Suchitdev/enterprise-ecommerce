@@ -1,0 +1,62 @@
+[
+    {
+        "name": "iPhone 17 Pro",
+        "slug": "iphone-17-pro",
+        "description": "Latest Apple flagship smartphone.",
+        "brand": "Apple",
+        "category": "Mobiles",
+        "sku": "APP-IP17-001",
+        "price": 119999,
+        "discount_price": 109999,
+        "stock": 20,
+        "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab"
+    },
+    {
+        "name": "Samsung Galaxy S26 Ultra",
+        "slug": "samsung-galaxy-s26-ultra",
+        "description": "Premium Samsung smartphone.",
+        "brand": "Samsung",
+        "category": "Mobiles",
+        "sku": "SAM-S26-001",
+        "price": 129999,
+        "discount_price": 119999,
+        "stock": 15,
+        "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf"
+    },
+    {
+        "name": "Sony WH-1000XM6",
+        "slug": "sony-wh1000xm6",
+        "description": "Wireless Noise Cancelling Headphones.",
+        "brand": "Sony",
+        "category": "Electronics",
+        "sku": "SONY-HP-001",
+        "price": 29999,
+        "discount_price": 27999,
+        "stock": 18,
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e"
+    },
+    {
+        "name": "MacBook Pro M5",
+        "slug": "macbook-pro-m5",
+        "description": "Apple laptop powered by M5 chip.",
+        "brand": "Apple",
+        "category": "Laptops",
+        "sku": "MAC-M5-001",
+        "price": 249999,
+        "discount_price": 229999,
+        "stock": 8,
+        "image": "https://images.unsplash.com/photo-1517336714739-489689fd1ca8"
+    },
+    {
+        "name": "Nike Air Max",
+        "slug": "nike-air-max",
+        "description": "Comfortable running shoes.",
+        "brand": "Nike",
+        "category": "Fashion",
+        "sku": "NIKE-AM-001",
+        "price": 7999,
+        "discount_price": 7499,
+        "stock": 35,
+        "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+    }
+]

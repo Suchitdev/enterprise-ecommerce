@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-warning text-dark">
+                    <h4>Edit Address</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" name="full_name" value="{{ address.full_name }}"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Phone</label>
+                            <input type="text" class="form-control" name="phone" value="{{ address.phone }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Address</label>
+                            <textarea class="form-control" name="address" required>{{ address.address }}</textarea>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <label>City</label>
+                                <input type="text" class="form-control" name="city" value="{{ address.city }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>State</label>
+                                <input type="text" class="form-control" name="state" value="{{ address.state }}"
+                                    required>
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <label>Pincode</label>
+                                <input type="text" class="form-control" name="pincode" value="{{ address.pincode }}"
+                                    required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Country</label>
+                                <input type="text" class="form-control" name="country" value="{{ address.country }}"
+                                    required>
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <button class="btn btn-warning w-100">
+                            Update Address
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="mb-0">
+            Admin - All Orders
+        </h2>
+
+        <span class="badge bg-primary fs-6">
+            Total Orders: {{ orders.count }}
+        </span>
+
+    </div>
+
+
+    {% if orders %}
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Order ID</th>
+
+                            <th>Customer</th>
+
+                            <th>Total</th>
+
+                            <th>Payment</th>
+
+                            <th>Payment Status</th>
+
+                            <th>Order Status</th>
+
+                            <th>Date</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for order in orders %}
+
+                        <tr>
+
+                            <td>
+                                <strong>#{{ order.id }}</strong>
+                            </td>
+
+
+                            <td>
+                                {{ order.user.username }}
+                            </td>
+
+
+                            <td>
+                                <strong>₹{{ order.total_price }}</strong>
+                            </td>
+
+
+                            <td>
+
+                                {% if order.payment_method == "ONLINE" %}
+
+                                <span class="badge bg-info text-dark">
+                                    Online
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-secondary">
+                                    Cash on Delivery
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if order.payment_status == "Paid" %}
+
+                                <span class="badge bg-success">
+                                    Paid
+                                </span>
+
+                                {% elif order.payment_status == "Failed" %}
+
+                                <span class="badge bg-danger">
+                                    Failed
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-warning text-dark">
+                                    {{ order.payment_status }}
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if order.order_status == "Confirmed" %}
+
+                                <span class="badge bg-success">
+                                    Confirmed
+                                </span>
+
+                                {% elif order.order_status == "Cancelled" %}
+
+                                <span class="badge bg-danger">
+                                    Cancelled
+                                </span>
+
+                                {% elif order.order_status == "Pending" %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Pending
+                                </span>
+
+                                {% elif order.order_status == "Shipped" %}
+
+                                <span class="badge bg-info text-dark">
+                                    Shipped
+                                </span>
+
+                                {% elif order.order_status == "Delivered" %}
+
+                                <span class="badge bg-success">
+                                    Delivered
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ order.order_status }}
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+                                {{ order.created_at|date:"d M Y, h:i A" }}
+                            </td>
+
+
+                            <td>
+
+                                <a
+                                    href="{% url 'admin_order_detail' order.id %}"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    View
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+    <div class="alert alert-info text-center shadow-sm">
+
+        <h5>
+            No orders found.
+        </h5>
+
+        <p class="mb-0">
+            There are currently no customer orders.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

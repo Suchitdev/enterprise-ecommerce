@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>My Addresses</h2>
+
+        <!-- Temporary -->
+        <a href="#" class="btn btn-success disabled">
+
+            <i class="bi bi-plus-circle"></i>
+            Add Address
+
+        </a>
+
+    </div>
+
+    {% for address in addresses %}
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    <h5 class="fw-bold">
+
+                        {{ address.full_name }}
+
+                        {% if address.is_default %}
+                        <span class="badge bg-success ms-2">
+                            Default
+                        </span>
+                        {% endif %}
+
+                    </h5>
+
+                    <p class="mb-2">
+
+                        <i class="bi bi-geo-alt-fill text-danger"></i>
+
+                        {{ address.address }}
+
+                        <br>
+
+                        {{ address.city }},
+                        {{ address.state }}
+                        -
+                        {{ address.pincode }}
+
+                        <br>
+
+                        {{ address.country }}
+
+                    </p>
+
+                    <p class="mb-0">
+
+                        <i class="bi bi-telephone-fill text-success"></i>
+
+                        {{ address.phone }}
+
+                    </p>
+
+                </div>
+
+                <div class="text-end">
+
+                    <!-- Temporary -->
+                    <button class="btn btn-warning btn-sm mb-2" disabled>
+
+                        <i class="bi bi-pencil-square"></i>
+                        Edit
+
+                    </button>
+
+                    <br>
+
+                    <!-- Temporary -->
+                    <button class="btn btn-outline-danger btn-sm" disabled>
+
+                        <i class="bi bi-trash"></i>
+                        Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="alert alert-warning text-center">
+
+        <h5>No Address Added Yet.</h5>
+
+        <!-- Temporary -->
+        <a href="#" class="btn btn-success disabled">
+
+            Add Your First Address
+
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+            <h4>Add New Address</h4>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <input class="form-control mb-3" name="full_name" placeholder="Full Name" required>
+
+                <!-- FIXED -->
+                <input class="form-control mb-3" name="phone_number" placeholder="Phone Number" required>
+
+                <textarea class="form-control mb-3" name="address" placeholder="Address" required></textarea>
+
+                <input class="form-control mb-3" name="city" placeholder="City" required>
+
+                <input class="form-control mb-3" name="state" placeholder="State" required>
+
+                <input class="form-control mb-3" name="pincode" placeholder="Pincode" required>
+
+                <input class="form-control mb-3" name="country" value="India">
+
+                <select class="form-select mb-3" name="address_type">
+                    <option value="Home">Home</option>
+                    <option value="Office">Office</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" name="is_default">
+                    <label class="form-check-label">
+                        Set as Default Address
+                    </label>
+                </div>
+
+                <button class="btn btn-success">
+                    Save Address
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

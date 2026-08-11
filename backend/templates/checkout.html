@@ -1,0 +1,598 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h2 class="mb-4">
+        Checkout
+    </h2>
+
+
+    <!-- ===================================== -->
+    <!-- CART SUMMARY -->
+    <!-- ===================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <h4 class="mb-0">
+                Your Cart
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if cart_items %}
+
+                {% for item in cart_items %}
+
+                <div class="card mb-3">
+
+                    <div class="card-body">
+
+                        <div class="row align-items-center">
+
+                            <!-- Product Image -->
+
+                            <div class="col-md-2">
+
+                                {% if item.product.image %}
+
+                                <img
+                                    src="{{ item.product.image }}"
+                                    class="img-fluid rounded"
+                                    style="height:100px; width:100px; object-fit:cover;"
+                                >
+
+                                {% else %}
+
+                                <img
+                                    src="https://placehold.co/100x100?text=Product"
+                                    class="img-fluid rounded"
+                                >
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- Product Details -->
+
+                            <div class="col-md-6">
+
+                                <h5>
+                                    {{ item.product.name }}
+                                </h5>
+
+                                <p class="mb-1">
+
+                                    Quantity:
+                                    <strong>
+                                        {{ item.quantity }}
+                                    </strong>
+
+                                </p>
+
+                                <p class="mb-0">
+
+                                    Price:
+                                    ₹{{ item.product.discount_price }}
+
+                                </p>
+
+                            </div>
+
+
+                            <!-- Subtotal -->
+
+                            <div class="col-md-4 text-end">
+
+                                <strong>
+                                    Subtotal
+                                </strong>
+
+                                <h5 class="text-success">
+
+                                    ₹{{ item.subtotal }}
+
+                                </h5>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+
+                <!-- CART TOTAL -->
+
+                <div class="text-end">
+
+                    <h4>
+
+                        Cart Total:
+                        ₹{{ total }}
+
+                    </h4>
+
+                </div>
+
+
+            {% else %}
+
+                <div class="alert alert-warning">
+
+                    Your cart is empty.
+
+                </div>
+
+                <a
+                    href="{% url 'home' %}"
+                    class="btn btn-primary"
+                >
+
+                    Continue Shopping
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    {% if cart_items %}
+
+
+    <!-- ===================================== -->
+    <!-- COUPON -->
+    <!-- ===================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <h4 class="mb-0">
+                Apply Coupon
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <form
+                method="POST"
+                action="{% url 'apply_coupon' %}"
+            >
+
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <div class="col-md-8 mb-2">
+
+                        <input
+                            type="text"
+                            name="coupon"
+                            class="form-control"
+                            placeholder="Enter Coupon Code"
+                            value="{{ coupon_code|default:'' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4 mb-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-warning w-100"
+                        >
+
+                            Apply Coupon
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+
+            <!-- Applied Coupon -->
+
+            {% if coupon_code %}
+
+            <div class="alert alert-success mt-3 mb-0">
+
+                <strong>
+                    Coupon Applied:
+                </strong>
+
+                {{ coupon_code }}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ===================================== -->
+    <!-- PRICE SUMMARY -->
+    <!-- ===================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+
+            <h4 class="mb-0">
+                Price Summary
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between mb-2">
+
+                <span>
+                    Cart Total
+                </span>
+
+                <strong>
+                    ₹{{ total }}
+                </strong>
+
+            </div>
+
+
+            {% if discount_amount %}
+
+            <div class="d-flex justify-content-between mb-2 text-success">
+
+                <span>
+                    Discount
+                </span>
+
+                <strong>
+                    - ₹{{ discount_amount|floatformat:2 }}
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+
+            <hr>
+
+
+            <div class="d-flex justify-content-between">
+
+                <h4>
+                    Final Amount
+                </h4>
+
+                <h4 class="text-success">
+
+                    ₹{{ final_total|floatformat:2 }}
+
+                </h4>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ===================================== -->
+    <!-- CHECKOUT FORM -->
+    <!-- ===================================== -->
+
+    <form
+        method="POST"
+        action="{% url 'checkout' %}"
+    >
+
+        {% csrf_token %}
+
+
+        <!-- ===================================== -->
+        <!-- DELIVERY ADDRESS -->
+        <!-- ===================================== -->
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+
+                <h4 class="mb-0">
+                    Select Delivery Address
+                </h4>
+
+            </div>
+
+            <div class="card-body">
+
+                {% if addresses %}
+
+                    {% for address in addresses %}
+
+                    <div class="card mb-3">
+
+                        <div class="card-body">
+
+                            <div class="form-check">
+
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="address"
+                                    value="{{ address.id }}"
+                                    id="address{{ address.id }}"
+                                    required
+                                >
+
+
+                                <label
+                                    class="form-check-label"
+                                    for="address{{ address.id }}"
+                                >
+
+                                    <strong>
+                                        {{ address.full_name }}
+                                    </strong>
+
+                                    <br>
+
+                                    {{ address.address }}
+
+                                    <br>
+
+                                    {{ address.city }},
+                                    {{ address.state }}
+                                    -
+                                    {{ address.pincode }}
+
+                                    <br>
+
+                                    {{ address.country }}
+
+                                    <br>
+
+                                    <small class="text-muted">
+
+                                        {{ address.address_type }}
+
+                                    </small>
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+
+                    <a
+                        href="{% url 'add_address' %}"
+                        class="btn btn-outline-primary"
+                    >
+
+                        + Add New Address
+
+                    </a>
+
+
+                {% else %}
+
+                    <div class="alert alert-warning">
+
+                        <strong>
+                            No delivery address found.
+                        </strong>
+
+                        <br>
+
+                        Please add an address before placing your order.
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'add_address' %}"
+                        class="btn btn-primary"
+                    >
+
+                        Add Delivery Address
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ===================================== -->
+        <!-- PAYMENT METHOD -->
+        <!-- ===================================== -->
+
+        {% if addresses %}
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+
+                <h4 class="mb-0">
+                    Payment Method
+                </h4>
+
+            </div>
+
+            <div class="card-body">
+
+
+                <!-- COD -->
+
+                <div class="card mb-3">
+
+                    <div class="card-body">
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="payment"
+                                value="COD"
+                                id="paymentCOD"
+                                checked
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="paymentCOD"
+                            >
+
+                                <strong>
+                                    Cash on Delivery
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+
+                                    Pay when your order is delivered.
+
+                                </small>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- RAZORPAY -->
+
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="payment"
+                                value="ONLINE"
+                                id="paymentOnline"
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="paymentOnline"
+                            >
+
+                                <strong>
+                                    Online Payment
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+
+                                    Secure payment using Razorpay.
+
+                                </small>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ===================================== -->
+        <!-- PLACE ORDER -->
+        <!-- ===================================== -->
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-body text-center">
+
+                <h5 class="mb-3">
+
+                    Total Payable:
+                    <span class="text-success">
+
+                        ₹{{ final_total|floatformat:2 }}
+
+                    </span>
+
+                </h5>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-success btn-lg px-5"
+                >
+
+                    Place Order
+
+                </button>
+
+
+                <a
+                    href="{% url 'cart' %}"
+                    class="btn btn-outline-secondary btn-lg ms-2"
+                >
+
+                    Back to Cart
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </form>
+
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

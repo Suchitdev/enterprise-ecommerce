@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-6">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-success text-white">
+
+                <h3 class="mb-0">
+                    Razorpay Payment
+                </h3>
+
+            </div>
+
+            <div class="card-body text-center">
+
+                <h4 class="mb-3">
+                    Order #{{ order.id }}
+                </h4>
+
+                <h2 class="text-success mb-3">
+                    ₹{{ order.total_price }}
+                </h2>
+
+                <p class="text-muted">
+
+                    Click the button below to complete your
+                    secure payment.
+
+                </p>
+
+                <button id="pay-btn" class="btn btn-success btn-lg">
+
+                    Pay ₹{{ order.total_price }}
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Razorpay Checkout -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+    var options = {
+
+        "key": "{{ razorpay_key }}",
+
+        "amount": "{{ payment.amount }}",
+
+        "currency": "INR",
+
+        "name": "Enterprise Ecommerce",
+
+        "description": "Order #{{ order.id }}",
+
+        "order_id": "{{ payment.id }}",
+
+        "handler": function (response) {
+
+            window.location.href =
+                "{% url 'payment_success' %}" +
+                "?payment_id=" +
+                encodeURIComponent(response.razorpay_payment_id) +
+                "&order_id=" +
+                encodeURIComponent(response.razorpay_order_id) +
+                "&signature=" +
+                encodeURIComponent(response.razorpay_signature);
+
+        },
+
+        "prefill": {
+
+            "name": "{{ request.user.get_full_name }}",
+
+            "email": "{{ request.user.email }}"
+
+        },
+
+        "theme": {
+
+            "color": "#198754"
+
+        }
+
+    };
+
+
+    var razorpay = new Razorpay(options);
+
+
+    document.getElementById("pay-btn").onclick = function (e) {
+
+        razorpay.open();
+
+        e.preventDefault();
+
+    };
+
+</script>
+
+{% endblock %}
