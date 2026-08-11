@@ -38,3 +38,7 @@ jobs:
           POSTGRES_PORT: "5432"
         run: |
           python manage.py check
+
+      - name: Build Docker image
+        run: |
+          docker build -t enterprise-ecommerce:ci .
