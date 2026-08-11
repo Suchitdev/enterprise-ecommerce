@@ -1,0 +1,41 @@
+services:
+
+  db:
+    image: postgres:16
+    container_name: enterprise-ecommerce-db
+
+    environment:
+      POSTGRES_DB: enterprise_ecommerce
+      POSTGRES_USER: enterprise_user
+      POSTGRES_PASSWORD: enterprise_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: enterprise-ecommerce-web
+
+    env_file:
+      - .env
+
+    depends_on:
+      - db
+
+    ports:
+      - "8000:8000"
+
+    restart: unless-stopped
+
+
+volumes:
+  postgres_data:
