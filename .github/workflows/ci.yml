@@ -52,7 +52,9 @@ jobs:
       - name: Tag Docker image
         run: |
           docker tag enterprise-ecommerce:ci ${{ secrets.DOCKERHUB_USERNAME }}/enterprise-ecommerce:latest
+          docker tag enterprise-ecommerce:ci ${{ secrets.DOCKERHUB_USERNAME }}/enterprise-ecommerce:${{ github.sha }}
 
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/enterprise-ecommerce:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/enterprise-ecommerce:${{ github.sha }}
