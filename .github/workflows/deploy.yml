@@ -18,6 +18,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
 
           script: |
+            set -e
+
             cd ~/enterprise-ecommerce
 
             echo "Pulling latest code..."
