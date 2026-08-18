@@ -25,14 +25,17 @@ jobs:
             echo "Pulling latest code..."
             git pull origin main
 
+            echo "Checking Docker Compose..."
+            docker compose version
+
             echo "Building and starting web application..."
-            docker-compose up -d --build web
+            docker compose up -d --build web
 
             echo "Running database migrations..."
-            docker-compose exec -T web python manage.py migrate
+            docker compose exec -T web python manage.py migrate
 
             echo "Checking running containers..."
-            docker-compose ps
+            docker compose ps
 
             echo "Running application health check..."
             curl -f http://localhost:8000 || exit 1
