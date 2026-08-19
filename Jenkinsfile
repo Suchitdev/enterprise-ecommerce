@@ -19,6 +19,17 @@ pipeline {
             }
         }
 
+        stage('Run Django Tests') {
+            steps {
+                sh '''
+                    docker run --rm \
+                      --env-file .env \
+                      enterprise-ecommerce:jenkins-${BUILD_NUMBER} \
+                      python manage.py test
+                '''
+            }
+        }
+
         stage('Verify Docker Image') {
             steps {
                 sh '''
