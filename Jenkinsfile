@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'enterprise-ecommerce'
-        IMAGE_TAG = "jenkins-${BUILD_NUMBER}"
-        DB_CONTAINER = 'jenkins-enterprise-ecommerce-db'
+        DOCKER_IMAGE = "suchit10/enterprise-ecommerce"
     }
 
     stages {
@@ -17,72 +15,70 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh '''
+                sh """
                     docker build \
-                      -t ${IMAGE_NAME}:${IMAGE_TAG} \
-                      .
-                '''
-            }
-        }
-
-        stage('Start Test Database') {
-            steps {
-                sh '''
-                    docker rm -f ${DB_CONTAINER} 2>/dev/null || true
-
-                    docker run -d \
-                      --name ${DB_CONTAINER} \
-                      -e POSTGRES_DB=enterprise_ecommerce \
-                      -e POSTGRES_USER=enterprise_user \
-                      -e POSTGRES_PASSWORD=enterprise_password \
-                      postgres:16
-
-                    echo "Waiting for PostgreSQL..."
-
-                    sleep 10
-                '''
+                        -t ${DOCKER_IMAGE}:jenkins-${BUILD_NUMBER} \
+                        -t ${DOCKER_IMAGE}:latest \
+                        .
+                """
             }
         }
 
         stage('Run Django Tests') {
             steps {
-                sh '''
+                sh """
                     docker run --rm \
-                      --link ${DB_CONTAINER}:db \
-                      -e POSTGRES_DB=enterprise_ecommerce \
-                      -e POSTGRES_USER=enterprise_user \
-                      -e POSTGRES_PASSWORD=enterprise_password \
-                      -e POSTGRES_HOST=db \
-                      -e POSTGRES_PORT=5432 \
-                      ${IMAGE_NAME}:${IMAGE_TAG} \
-                      python manage.py test
-                '''
+                        --network jenkins-test \
+                        -e POSTGRES_DB=enterprise_ecommerce \
+                        -e POSTGRES_USER=enterprise_user \
+                        -e POSTGRES_PASSWORD=enterprise_password \
+                        -e POSTGRES_HOST=jenkins-db \
+                        -e POSTGRES_PORT=5432 \
+                        ${DOCKER_IMAGE}:jenkins-${BUILD_NUMBER} \
+                        python manage.py test
+                """
+            }
+        }
+
+        stage('Docker Hub Login & Push') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh """
+                        echo "\$DOCKER_PASSWORD" | docker login \
+                            -u "\$DOCKER_USERNAME" \
+                            --password-stdin
+
+                        docker push ${DOCKER_IMAGE}:jenkins-${BUILD_NUMBER}
+                        docker push ${DOCKER_IMAGE}:latest
+
+                        docker logout
+                    """
+                }
             }
         }
 
         stage('Verify Docker Image') {
             steps {
-                sh '''
-                    docker images ${IMAGE_NAME}
-                '''
+                sh """
+                    docker images ${DOCKER_IMAGE}
+                """
             }
         }
     }
 
     post {
-        always {
-            sh '''
-                docker rm -f ${DB_CONTAINER} 2>/dev/null || true
-                docker image prune -f
-            '''
-        }
-
         success {
-            echo 'Jenkins CI pipeline completed successfully!'
+            echo 'Jenkins CI/CD image build and Docker Hub push completed successfully!'
         }
 
         failure {
-            echo 'Jenkins CI pipeline failed.'
+            echo 'Jenkins pipeline failed.'
         }
     }
 }
