@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-web
+  namespace: ecommerce
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: ecommerce-web
+
+  template:
+    metadata:
+      labels:
+        app: ecommerce-web
+
+    spec:
+      containers:
+        - name: django
+
+          # Docker image containing your Django application
+          image: enterprise-ecommerce:latest
+
+          # Important when using a locally built image with Minikube
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 8000
+
+          env:
+            - name: POSTGRES_HOST
+              value: postgres
+
+            - name: POSTGRES_PORT
+              value: "5432"
+
+            - name: POSTGRES_DB
+              value: ecommerce
+
+            - name: POSTGRES_USER
+              value: ecommerce
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: ALLOWED_HOSTS
+              value: "*"
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+    
+
+    
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-web-service
+  namespace: ecommerce
+
+spec:
+  selector:
+    app: ecommerce-web
+
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+
+  type: NodePort
